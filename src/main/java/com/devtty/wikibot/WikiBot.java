@@ -5,6 +5,13 @@ import java.util.Date;
 import net.sourceforge.jwbf.core.contentRep.Article;
 import net.sourceforge.jwbf.mediawiki.actions.queries.AllPageTitles;
 import net.sourceforge.jwbf.mediawiki.bots.MediaWikiBot;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,13 +86,58 @@ public class WikiBot {
     }
     
     public static void main(String[] args) {
+        CommandLine cl = null;
+        HelpFormatter helpFmt = new HelpFormatter();
+        CommandLineParser clParser = new BasicParser();
         
-        WikiBot w = new WikiBot();        
+        Options clOptions = new Options();
+        
+        clOptions.addOption(OptionBuilder
+                .withLongOpt("help")
+                .withDescription("displays this help and exits")
+                .isRequired(false)
+                .create("h"));
+        
+      
+        
+        clOptions.addOption(OptionBuilder
+                .withLongOpt("user")
+                .withDescription("login name")
+                .hasArg()
+                .withArgName("LOGINNAME")
+                .create());
+        
+        clOptions.addOption(OptionBuilder
+                .withLongOpt("password")
+                .withDescription("password")
+                .hasArg()
+                .withArgName("PASSWORD")
+                .create());
+        
+        clOptions.addOption(OptionBuilder
+                .withArgName("WIKI")
+                .hasArg()
+        .withDescription("url")
+        .create("ur"));
+        try{
+            cl = clParser.parse(clOptions, args);
+            if(cl.hasOption('h')){
+                helpFmt.printHelp(WikiBot.class.getName(), clOptions);
+                return;
+            }
+        }catch(ParseException pe){
+            helpFmt.printHelp(WikiBot.class.getName(), clOptions);
+            System.out.println("ParseException:" + pe.getMessage());
+            return;
+        }
+        
+        
+      /*  WikiBot w = new WikiBot();        
         //Print Debug INFO
         w.debug();
         
         w.oldArt();
-
+*/
     }
     
 }
